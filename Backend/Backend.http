@@ -1,0 +1,15 @@
+@Backend_HostAddress = https://localhost:5001
+
+POST {{Backend_HostAddress}}/api/authentication/RegisterUser
+Content-Type: application/json
+{
+    "UserName": "John",
+    "fullName": "John Doe",
+    "email": "filip.jeftic95@gmail.com",
+    "password": "sampita",
+    "birthDate": "1990-05-15T00:00:00Z",
+    "address": "Cara Dusana",
+    "userType": 1
+}
+
+###
