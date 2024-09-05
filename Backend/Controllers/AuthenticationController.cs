@@ -1,5 +1,6 @@
 ﻿using Backend.Application.Dtos.Requests;
 using Backend.Application.Dtos.Responses;
+using Backend.Application.Features.Authentication.Commands.AuthenticateUser;
 using Backend.Application.Features.Authentication.Commands.RegisterUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,16 @@ namespace Backend.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequestDto registerUserRequestDto)
         {
             var result = await _mediator.Send(new RegisterUserCommand(registerUserRequestDto));
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(typeof(AuthenticateUserResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<AuthenticateUserResponseDto>> AuthenticateUser([FromBody] AuthenticateUserRequestDto authenticateUserRequestDto)
+        {
+            var result = await _mediator.Send(new AuthenticateUserCommand(authenticateUserRequestDto));
             return Ok(result);
         }
     }

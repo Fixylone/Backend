@@ -3,13 +3,22 @@
 POST {{Backend_HostAddress}}/api/authentication/RegisterUser
 Content-Type: application/json
 {
-    "UserName": "John",
+    "userName": "John",
     "fullName": "John Doe",
     "email": "filip.jeftic95@gmail.com",
     "password": "sampita",
     "birthDate": "1990-05-15T00:00:00Z",
     "address": "Cara Dusana",
-    "userType": 1
+    "userType": "User"
+}
+
+###
+
+POST {{Backend_HostAddress}}/api/authentication/AuthenticateUser
+Content-Type: application/json
+{
+  "email": "filip.jeftic95@gmail.com",
+  "password": "sampita"
 }
 
 ###

@@ -22,9 +22,6 @@ namespace Backend.Application.Features.Authentication.Commands.RegisterUser
         /// <inheritdoc/>
         public async Task<GetDetailsResponseDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            if (request.RegisterUserRequestDto.UserType == Enums.Role.Administrator)
-                throw new InvalidRoleException("You can not register as administrator.");
-
             if (string.IsNullOrWhiteSpace(request.RegisterUserRequestDto.Password))
                 throw new InvalidPasswordException("Password is required.");
 
@@ -49,6 +46,7 @@ namespace Backend.Application.Features.Authentication.Commands.RegisterUser
                 BirthDate = request.RegisterUserRequestDto.BirthDate,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                Email = request.RegisterUserRequestDto.Email,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = request.RegisterUserRequestDto.UserType == Enums.Role.User,
                 RoleId = role!.Id
@@ -57,10 +55,13 @@ namespace Backend.Application.Features.Authentication.Commands.RegisterUser
             await _userRepository.AddUser(user);
             await _userRepository.Save();
 
-            if (request.RegisterUserRequestDto.UserType == Enums.Role.User)
-                await _emailService.SendAsync(request.RegisterUserRequestDto.Email, "Successful registration", Domain.Enums.EmailTemplate.ConfirmationEmail);
-            else if (request.RegisterUserRequestDto.UserType == Enums.Role.Driver)
+            if (request.RegisterUserRequestDto.UserType == Enums.Role.Driver)
                 await _emailService.SendAsync(request.RegisterUserRequestDto.Email, "Pending registration", Domain.Enums.EmailTemplate.PendingConfirmationEmail);
+            else
+            {
+                await _emailService.SendAsync(request.RegisterUserRequestDto.Email, "Successful registration", Domain.Enums.EmailTemplate.ConfirmationEmail);
+                _logger.LogInformation("User {User} is successfully registered.", request.RegisterUserRequestDto.UserName);
+            }
 
             return new GetDetailsResponseDto(user.Id, user.Username, user.FullName, user.Email,
                 new RoleResponseDto(role.Id, role.Name), user.CreatedAt, user.UpdatedAt, user.LastLoginAt, user.IsActive);

@@ -1,6 +1,6 @@
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Security.Claims;
+using System.Text;
 using Backend.Application.Contracts;
 using Backend.Application.Extensions;
 using Backend.Domain.ConfigurationModels;
@@ -9,7 +9,9 @@ using Backend.Extensions;
 using Backend.Infrastructure.DataAccess;
 using Backend.Infrastructure.Extensions;
 using Backend.OptionsSetup;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,22 +20,75 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole",
-        policy => policy.RequireRole(Backend.Application.Enums.Role.Administrator.ToString()));
+        policy => policy.RequireRole(Backend.Application.Enums.Role.Admin.ToString()));
 });
 
 // Add services to the container.
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
-    // You can customize the JSON serializer here (optional)
-    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.UseMemberCasing();
+    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Configure JWT authentication.
+// Configure strongly typed settings objects.
+var appSettingsSection = builder.Configuration.GetSection("AppSettings");
+var appSettings = appSettingsSection.Get<AppSettingsOptions>();
+var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
+builder.Services
+    .AddAuthentication(configuration =>
+    {
+        configuration.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        configuration.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(configuration =>
+    {
+        configuration.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var db = context.HttpContext.RequestServices.GetRequiredService<ApplicationDbContext>();
+                var userId = context.Principal?.Identity?.Name;
+                if (userId == null)
+                {
+                    context.Fail("Unauthorized");
+                    return Task.CompletedTask;
+                }
+
+                var user = db.Users.AsNoTracking().Include(x => x.Role)
+                    .FirstOrDefault(x => x.Id == Guid.Parse(userId));
+
+                if (user == null)
+                {
+                    context.Fail("Unauthorized");
+                    return Task.CompletedTask;
+                }
+
+                if (user.RoleId != null)
+                {
+                    var identity = context.Principal?.Identity as ClaimsIdentity;
+                    identity?.AddClaim(new Claim(ClaimTypes.Role, user.Role.Name));
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+        configuration.RequireHttpsMetadata = false;
+        configuration.SaveToken = true;
+        configuration.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
 builder.Services.AddEndpointsApiExplorer();
-// Add Swagger.
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -94,16 +149,11 @@ using var serviceScope = app.Services.GetService<IServiceScopeFactory>()?.Create
 if (serviceScope == null)
     throw new ApplicationException("Cannot create service scope.");
 
-
 var db = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
 var passwordHelper = serviceScope.ServiceProvider.GetService<IPasswordHelper>();
 
 if (db == null || passwordHelper == null)
     throw new ApplicationException("Cannot get service.");
-
-// Configure strongly typed settings objects.
-var appSettingsSection = builder.Configuration.GetSection("AppSettings");
-var appSettings = appSettingsSection.Get<AppSettingsOptions>();
 
 // Migrate any database changes on startup (includes initial database creation).
 db.Database.Migrate();
@@ -128,7 +178,7 @@ if (db.Users.FirstOrDefault(x => x.Username == appSettings.AdminUsername) == nul
     var adminRole = new Role
     {
         Id = Guid.NewGuid(),
-        Name = Backend.Application.Enums.Role.Administrator.ToString(),
+        Name = Backend.Application.Enums.Role.Admin.ToString(),
         CreatedById = user.Id
     };
 
@@ -157,6 +207,8 @@ if (db.Users.FirstOrDefault(x => x.Username == appSettings.AdminUsername) == nul
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseApplicationMiddleware();
 
 app.MapControllers();
 

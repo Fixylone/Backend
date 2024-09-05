@@ -11,6 +11,12 @@ namespace Backend.Infrastructure.DataAccess.Repositories
             await _applicationDbContext.Users.AddAsync(user);
         }
 
+        public async Task<User?> GetActiveUserByEmail(string email)
+        {
+            return await _applicationDbContext.Users.FirstOrDefaultAsync(
+                x => x.Email == email && x.IsActive);
+        }
+
         public async Task<User?> GetUserByUsernameOrEmail(string username, string email)
         {
             return await _applicationDbContext.Users.FirstOrDefaultAsync(
