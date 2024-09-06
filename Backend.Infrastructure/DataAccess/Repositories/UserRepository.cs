@@ -17,6 +17,12 @@ namespace Backend.Infrastructure.DataAccess.Repositories
                 x => x.Email == email && x.IsActive);
         }
 
+        public async Task<User?> GetUserByExternalProviderData(string externalIdentityProvider, string externalId)
+        {
+            return await _applicationDbContext.Users.SingleOrDefaultAsync(x =>
+           x.ExternalIdentityProvider == externalIdentityProvider && x.ExternalId == externalId);
+        }
+
         public async Task<User?> GetUserByUsernameOrEmail(string username, string email)
         {
             return await _applicationDbContext.Users.FirstOrDefaultAsync(

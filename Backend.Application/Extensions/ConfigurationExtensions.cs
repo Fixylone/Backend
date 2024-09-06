@@ -18,6 +18,7 @@ namespace Backend.Application.Extensions
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddSingleton<IPasswordHelper, PasswordHelper>();
+            services.AddSingleton<IJwtProvider, JwtProvider>();
 
             services.AddMediatR(config =>
             {

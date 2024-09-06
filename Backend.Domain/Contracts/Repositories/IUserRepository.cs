@@ -6,6 +6,8 @@ namespace Backend.Domain.Contracts.Repositories
     {
         Task<User?> GetUserByUsernameOrEmail(string username, string email);
 
+        Task<User?> GetUserByExternalProviderData(string externalIdentityProvider, string externalId);
+
         Task<User?> GetActiveUserByEmail(string email);
 
         Task AddUser(User user);

@@ -9,8 +9,10 @@ using Backend.Extensions;
 using Backend.Infrastructure.DataAccess;
 using Backend.Infrastructure.Extensions;
 using Backend.OptionsSetup;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -86,7 +88,22 @@ builder.Services
             ValidateIssuer = false,
             ValidateAudience = false
         };
-    });
+    })
+    .AddOpenIdConnect("oidc-google", options =>
+    {
+        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.Authority = "https://accounts.google.com";
+        options.RequireHttpsMetadata = false;
+        options.ClientId = appSettings.OidcGoogleClientId;
+        options.ClientSecret = appSettings.OidcGoogleClientSecret;
+        options.ResponseType = $"{OpenIdConnectParameterNames.Code} {OpenIdConnectParameterNames.IdToken}";
+        options.SaveTokens = true;
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+    })
+    .AddCookie();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
