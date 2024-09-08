@@ -22,3 +22,18 @@ Content-Type: application/json
 }
 
 ###
+
+PATCH {{Backend_HostAddress}}/api/user/UpdateUser/4205a58b-b905-4404-8f2a-6df4e3345927
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjQyMDVhNThiLWI5MDUtNDQwNC04ZjJhLTZkZjRlMzM0NTkyNyIsIm5iZiI6MTcyNTgyMjgzOSwiZXhwIjoxNzI2NDI3NjM5LCJpYXQiOjE3MjU4MjI4Mzl9.oTX8uc_nk9SyyT_lzrL_ZV2aM3DOTHDfWL22R_-AMtA
+
+{
+    "userName": "John",
+    "fullName": "John Doe Doe",
+    "email": "filip.jeftic95@gmail.com",
+    "birthDate": "1995-05-15T00:00:00Z",
+    "address": "Cara Dusana 5",
+    "password": "sampita"
+}
+
+###

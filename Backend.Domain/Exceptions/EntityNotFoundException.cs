@@ -2,29 +2,29 @@
 
 namespace Backend.Domain.Exceptions
 {
-    public class InvalidRoleException : AppException
+    public class EntityNotFoundException : AppException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidRoleException"/> class.
+        /// Initializes a new instance of the <see cref="EntityNotFoundException"/> class.
         /// </summary>
-        public InvalidRoleException()
+        public EntityNotFoundException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidRoleException"/> class.
+        /// Initializes a new instance of the <see cref="EntityNotFoundException"/> class.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public InvalidRoleException(string message) : base(message)
+        public EntityNotFoundException(string message) : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidRoleException"/> class.
+        /// Initializes a new instance of the <see cref="EntityNotFoundException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="args">The arguments.</param>
-        public InvalidRoleException(string message, params object[] args)
+        public EntityNotFoundException(string message, params object[] args)
             : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
         }

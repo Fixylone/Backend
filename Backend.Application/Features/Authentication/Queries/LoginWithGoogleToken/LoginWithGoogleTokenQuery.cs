@@ -1,7 +1,6 @@
 ﻿using Backend.Application.Contracts;
 using Backend.Application.Dtos.Responses;
 using Backend.Domain.Contracts.Repositories;
-using Backend.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +23,7 @@ namespace Backend.Application.Features.Authentication.Queries.LoginWithGoogleTok
             // Create a user if doesn't exist.
             if (user is null)
             {
-                user = new User
+                user = new Domain.Entities.User
                 {
                     Id = Guid.NewGuid(),
                     ExternalId = request.ExternalId,

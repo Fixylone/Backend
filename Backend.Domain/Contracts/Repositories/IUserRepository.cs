@@ -10,6 +10,10 @@ namespace Backend.Domain.Contracts.Repositories
 
         Task<User?> GetActiveUserByEmail(string email);
 
+        Task<User?> GetUserById(Guid id);
+
+        Task<bool> IsUsernameAvailable(string username);
+
         Task AddUser(User user);
 
         Task Save();

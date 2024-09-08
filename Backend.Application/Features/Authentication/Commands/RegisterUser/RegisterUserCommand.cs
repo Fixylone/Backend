@@ -3,7 +3,6 @@ using Backend.Application.Dtos.Requests;
 using Backend.Application.Dtos.Responses;
 using Backend.Domain.Contracts.ExternalServices;
 using Backend.Domain.Contracts.Repositories;
-using Backend.Domain.Entities;
 using Backend.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -37,7 +36,7 @@ namespace Backend.Application.Features.Authentication.Commands.RegisterUser
             var (passwordHash, passwordSalt) = _passwordHelper.CreateHash(request.RegisterUserRequestDto.Password);
 
             var role = await _roleRepository.GetRoleByName(request.RegisterUserRequestDto.UserType.ToString());
-            var user = new User
+            var user = new Domain.Entities.User
             {
                 Id = Guid.NewGuid(),
                 Username = request.RegisterUserRequestDto.UserName,

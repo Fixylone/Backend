@@ -2,7 +2,7 @@
 
 namespace Backend.Domain.Exceptions
 {
-    public class EmailNotExistException : Exception
+    public class EmailNotExistException : AppException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailNotExistException"/> class.

@@ -53,7 +53,6 @@ builder.Services
         {
             OnTokenValidated = context =>
             {
-                var db = context.HttpContext.RequestServices.GetRequiredService<ApplicationDbContext>();
                 var userId = context.Principal?.Identity?.Name;
                 if (userId == null)
                 {
@@ -61,6 +60,7 @@ builder.Services
                     return Task.CompletedTask;
                 }
 
+                var db = context.HttpContext.RequestServices.GetRequiredService<ApplicationDbContext>();
                 var user = db.Users.AsNoTracking().Include(x => x.Role)
                     .FirstOrDefault(x => x.Id == Guid.Parse(userId));
 

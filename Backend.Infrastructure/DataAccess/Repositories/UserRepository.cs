@@ -11,22 +11,34 @@ namespace Backend.Infrastructure.DataAccess.Repositories
             await _applicationDbContext.Users.AddAsync(user);
         }
 
+        public async Task<User?> GetUserById(Guid id)
+        {
+            return await _applicationDbContext.Users
+                .Include(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<User?> GetActiveUserByEmail(string email)
         {
-            return await _applicationDbContext.Users.FirstOrDefaultAsync(
-                x => x.Email == email && x.IsActive);
+            return await _applicationDbContext.Users
+                .FirstOrDefaultAsync(x => x.Email == email && x.IsActive);
         }
 
         public async Task<User?> GetUserByExternalProviderData(string externalIdentityProvider, string externalId)
         {
-            return await _applicationDbContext.Users.SingleOrDefaultAsync(x =>
-           x.ExternalIdentityProvider == externalIdentityProvider && x.ExternalId == externalId);
+            return await _applicationDbContext.Users
+                .SingleOrDefaultAsync(x => x.ExternalIdentityProvider == externalIdentityProvider && x.ExternalId == externalId);
         }
 
         public async Task<User?> GetUserByUsernameOrEmail(string username, string email)
         {
-            return await _applicationDbContext.Users.FirstOrDefaultAsync(
-                x => x.Username == username || x.Email == email);
+            return await _applicationDbContext.Users
+                .FirstOrDefaultAsync(x => x.Username == username || x.Email == email);
+        }
+
+        public async Task<bool> IsUsernameAvailable(string username)
+        {
+            return !(await _applicationDbContext.Users.AnyAsync(x => x.Username == username));
         }
 
         public async Task Save()

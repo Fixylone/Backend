@@ -2,11 +2,7 @@
 
 namespace Backend.Domain.Exceptions
 {
-    /// <summary>
-    /// Exception that should be thrown when password has invalid format.
-    /// </summary>
-    /// <seealso cref="Exception" />
-    public class InvalidPasswordException : Exception
+    public class InvalidPasswordException : AppException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidPasswordException"/> class.

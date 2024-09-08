@@ -2,11 +2,7 @@
 
 namespace Backend.Domain.Exceptions
 {
-    /// <summary>
-    /// Exception that should be thrown when the username is already taken.
-    /// </summary>
-    /// <seealso cref="Exception" />
-    public class UsernameTakenException : Exception
+    public class UsernameTakenException : AppException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UsernameTakenException"/> class.

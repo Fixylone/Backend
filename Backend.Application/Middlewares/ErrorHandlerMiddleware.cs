@@ -1,10 +1,12 @@
 ﻿using System.Net;
-using System.Text.Json;
+using Backend.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Backend.Application.Middlewares
 {
+    public record ExceptionResponse(HttpStatusCode StatusCode, string Description);
+
     /// <summary>
     /// Represents the global error middleware class.
     /// </summary>
@@ -20,17 +22,20 @@ namespace Backend.Application.Middlewares
             {
                 await next(context);
             }
-            catch (Exception error)
+            catch (Exception exception)
             {
-                logger.LogError(0, error, "An unexpected exception occurred during request handling.");
+                logger.LogError(0, exception, "An unexpected exception occurred during request handling.");
 
-                var response = context.Response;
-                response.ContentType = "application/json";
+                ExceptionResponse response = exception switch
+                {
+                    ForbiddenException _ => new ExceptionResponse(HttpStatusCode.Unauthorized, exception.Message),
+                    AppException => new ExceptionResponse(HttpStatusCode.BadRequest, exception.Message),
+                    _ => new ExceptionResponse(HttpStatusCode.InternalServerError, exception.Message)
+                };
 
-                response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
-                await response.WriteAsync(result);
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)response.StatusCode;
+                await context.Response.WriteAsJsonAsync(response);
             }
         }
     }

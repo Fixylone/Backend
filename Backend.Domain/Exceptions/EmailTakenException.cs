@@ -2,11 +2,7 @@
 
 namespace Backend.Domain.Exceptions
 {
-    /// <summary>
-    /// Exception that should be thrown when the email is already taken.
-    /// </summary>
-    /// <seealso cref="WebApi.Helpers.Exceptions.AppException" />
-    public class EmailTakenException : Exception
+    public class EmailTakenException : AppException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailTakenException"/> class.
