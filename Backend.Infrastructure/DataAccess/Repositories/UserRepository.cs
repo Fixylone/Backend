@@ -21,7 +21,7 @@ namespace Backend.Infrastructure.DataAccess.Repositories
         public async Task<User?> GetActiveUserByEmail(string email)
         {
             return await _applicationDbContext.Users
-                .FirstOrDefaultAsync(x => x.Email == email && x.IsActive);
+                .FirstOrDefaultAsync(x => x.Email == email && x.EmailVerificationStatus == Domain.Enums.EmailVerificationStatusEnum.Accepted);
         }
 
         public async Task<User?> GetUserByExternalProviderData(string externalIdentityProvider, string externalId)
@@ -34,6 +34,12 @@ namespace Backend.Infrastructure.DataAccess.Repositories
         {
             return await _applicationDbContext.Users
                 .FirstOrDefaultAsync(x => x.Username == username || x.Email == email);
+        }
+
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            return await _applicationDbContext.Users
+               .FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<bool> IsUsernameAvailable(string username)

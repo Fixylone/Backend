@@ -9,11 +9,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <NoWarn>1701;1702;1591;</NoWarn>
+		<NoWarn>1701;1702;1591;</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <NoWarn>1701;1702;1591;</NoWarn>
+		<NoWarn>1701;1702;1591;</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,11 +24,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Backend.Domain\Backend.Domain.csproj" />
+		<ProjectReference Include="..\Backend.Domain\Backend.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\User\Queries\" />
+		<Folder Include="Features\User\Queries\" />
 	</ItemGroup>
 
 </Project>

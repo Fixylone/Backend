@@ -9,7 +9,7 @@ Content-Type: application/json
     "password": "sampita",
     "birthDate": "1990-05-15T00:00:00Z",
     "address": "Cara Dusana",
-    "userType": "User"
+    "userType": "Driver"
 }
 
 ###
@@ -19,6 +19,14 @@ Content-Type: application/json
 {
   "email": "filip.jeftic95@gmail.com",
   "password": "sampita"
+}
+
+### admin authentication
+POST {{Backend_HostAddress}}/api/authentication/AuthenticateUser
+Content-Type: application/json
+{
+  "email": "admin@example.com",
+  "password": "Admin123!"
 }
 
 ###
@@ -36,4 +44,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6I
     "password": "sampita"
 }
 
+###
+
+POST {{Backend_HostAddress}}/api/user/UserAccountVerification?email=filip.jeftic95@gmail.com&emailConfirmation=Accept
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjU1ZGNlNDBhLTc2MTYtNDc1MC1iN2E0LTNiZWIzNDQ3ZTRjZSIsIm5iZiI6MTcyNTgyNzQwOSwiZXhwIjoxNzI2NDMyMjA5LCJpYXQiOjE3MjU4Mjc0MDl9.2Lxi8UxRi1L73FCg0byZ0gZPBPJ0LkXhrsNqq7ZPqho
+
+{
+
+}
 ###

@@ -5,6 +5,7 @@ using Backend.Application.Contracts;
 using Backend.Application.Extensions;
 using Backend.Domain.ConfigurationModels;
 using Backend.Domain.Entities;
+using Backend.Domain.Enums;
 using Backend.Extensions;
 using Backend.Infrastructure.DataAccess;
 using Backend.Infrastructure.Extensions;
@@ -22,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole",
-        policy => policy.RequireRole(Backend.Application.Enums.Role.Admin.ToString()));
+        policy => policy.RequireRole(RoleEnum.Admin.ToString()));
 });
 
 // Add services to the container.
@@ -184,7 +185,7 @@ if (db.Users.FirstOrDefault(x => x.Username == appSettings.AdminUsername) == nul
         Username = appSettings.AdminUsername,
         Email = appSettings.AdminEmail,
         CreatedAt = DateTime.UtcNow,
-        IsActive = true,
+        EmailVerificationStatus = EmailVerificationStatusEnum.Accepted,
         PasswordHash = passwordHash,
         PasswordSalt = passwordSalt
     };
@@ -195,21 +196,21 @@ if (db.Users.FirstOrDefault(x => x.Username == appSettings.AdminUsername) == nul
     var adminRole = new Role
     {
         Id = Guid.NewGuid(),
-        Name = Backend.Application.Enums.Role.Admin.ToString(),
+        Name = RoleEnum.Admin.ToString(),
         CreatedById = user.Id
     };
 
     var userRole = new Role
     {
         Id = Guid.NewGuid(),
-        Name = Backend.Application.Enums.Role.User.ToString(),
+        Name = RoleEnum.User.ToString(),
         CreatedById = user.Id
     };
 
     var driverRole = new Role
     {
         Id = Guid.NewGuid(),
-        Name = Backend.Application.Enums.Role.Driver.ToString(),
+        Name = RoleEnum.Driver.ToString(),
         CreatedById = user.Id
     };
 

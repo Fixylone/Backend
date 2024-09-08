@@ -1,6 +1,6 @@
 ﻿namespace Backend.Domain.Enums
 {
-    public enum EmailTemplate
+    public enum EmailTemplateEnum
     {
         ConfirmationEmail,
         PendingConfirmationEmail

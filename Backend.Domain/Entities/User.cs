@@ -1,4 +1,6 @@
-﻿namespace Backend.Domain.Entities;
+﻿using Backend.Domain.Enums;
+
+namespace Backend.Domain.Entities;
 
 /// <summary>
 /// The user model.
@@ -221,12 +223,12 @@ public class User
     public byte[] PasswordSalt { get; set; } = [];
 
     /// <summary>
-    /// Gets or sets a value indicating whether this user is active.
+    /// Gets or sets a value indicating whether this user is verified.
     /// </summary>
     /// <value>
-    ///   <c>true</c> if this user is active; otherwise, <c>false</c>.
+    ///   <c>true</c> if this user is verified; otherwise, <c>false</c>.
     /// </value>
-    public bool IsActive { get; set; }
+    public EmailVerificationStatusEnum EmailVerificationStatus { get; set; }
 
     /// <summary>
     /// Gets or sets the users that were created by this user.

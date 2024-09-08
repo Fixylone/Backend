@@ -3,6 +3,7 @@ using Backend.Application.Dtos.Requests;
 using Backend.Application.Dtos.Responses;
 using Backend.Domain.Contracts.ExternalServices;
 using Backend.Domain.Contracts.Repositories;
+using Backend.Domain.Enums;
 using Backend.Domain.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -47,23 +48,24 @@ namespace Backend.Application.Features.Authentication.Commands.RegisterUser
                 PasswordSalt = passwordSalt,
                 Email = request.RegisterUserRequestDto.Email,
                 CreatedAt = DateTime.UtcNow,
-                IsActive = request.RegisterUserRequestDto.UserType == Enums.Role.User,
+                EmailVerificationStatus = request.RegisterUserRequestDto.UserType == RoleEnum.User
+                ? EmailVerificationStatusEnum.Accepted : EmailVerificationStatusEnum.Pending,
                 RoleId = role!.Id
             };
 
             await _userRepository.AddUser(user);
             await _userRepository.Save();
 
-            if (request.RegisterUserRequestDto.UserType == Enums.Role.Driver)
-                await _emailService.SendAsync(request.RegisterUserRequestDto.Email, "Pending registration", Domain.Enums.EmailTemplate.PendingConfirmationEmail);
+            if (request.RegisterUserRequestDto.UserType == RoleEnum.Driver)
+                await _emailService.SendAsync(request.RegisterUserRequestDto.Email, "Pending registration", Domain.Enums.EmailTemplateEnum.PendingConfirmationEmail);
             else
             {
-                await _emailService.SendAsync(request.RegisterUserRequestDto.Email, "Successful registration", Domain.Enums.EmailTemplate.ConfirmationEmail);
+                await _emailService.SendAsync(request.RegisterUserRequestDto.Email, "Successful registration", Domain.Enums.EmailTemplateEnum.ConfirmationEmail);
                 _logger.LogInformation("User {User} is successfully registered.", request.RegisterUserRequestDto.UserName);
             }
 
             return new GetDetailsResponseDto(user.Id, user.Username, user.FullName, user.Email,
-                new RoleResponseDto(role.Id, role.Name), user.CreatedAt, user.UpdatedAt, user.LastLoginAt, user.IsActive);
+                new RoleResponseDto(role.Id, role.Name), user.CreatedAt, user.UpdatedAt, user.LastLoginAt, user.EmailVerificationStatus);
         }
     }
 }

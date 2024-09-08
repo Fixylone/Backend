@@ -57,7 +57,7 @@ namespace Backend.Application.Features.User.Commands
             await _userRepository.Save();
 
             return new GetDetailsResponseDto(user.Id, user.Username, user.FullName, user.Email,
-                new RoleResponseDto((Guid)user.RoleId, user.Role.Name), user.CreatedAt, user.UpdatedAt, user.LastLoginAt, user.IsActive);
+                new RoleResponseDto((Guid)user.RoleId, user.Role.Name), user.CreatedAt, user.UpdatedAt, user.LastLoginAt, user.EmailVerificationStatus);
         }
     }
 }

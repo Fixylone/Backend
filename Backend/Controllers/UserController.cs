@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Backend.Application.Dtos.Requests;
+using Backend.Application.Enums;
 using Backend.Application.Features.User.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,17 @@ namespace Backend.Controllers
                 new UpdateUserCommand(id, Guid.Parse(currentContext.FindFirst(ClaimTypes.Name)!.Value), updateUserRequestDto));
 
             return Ok(result);
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UserAccountVerification(string email, EmailConfirmationEnum emailConfirmation)
+        {
+            _ = await _mediator.Send(new UserAccountVerificationCommand(email, emailConfirmation));
+
+            return Ok();
         }
     }
 }

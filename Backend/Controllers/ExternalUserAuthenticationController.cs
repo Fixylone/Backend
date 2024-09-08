@@ -14,7 +14,7 @@ namespace Backend.Controllers
     /// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class ExternalUserController(IMediator _mediator) : ControllerBase
+    public class ExternalUserAuthenticationController(IMediator _mediator) : ControllerBase
     {
         /// <summary>
         /// Authenticates the user with Google account. Must be called from web browser!

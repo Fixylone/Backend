@@ -43,7 +43,7 @@ namespace Backend.Infrastructure.DataAccess
                 // Index.
                 b.HasKey(x => x.Id);
                 b.HasIndex(x => x.Username);
-                b.HasIndex(x => x.IsActive);
+                b.HasIndex(x => x.EmailVerificationStatus);
                 b.HasIndex(x => x.Email);
                 b.HasIndex(x => x.RoleId);
                 b.HasIndex(x => x.CreatedById);

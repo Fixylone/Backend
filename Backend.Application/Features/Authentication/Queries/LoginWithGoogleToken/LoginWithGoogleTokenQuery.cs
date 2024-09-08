@@ -30,7 +30,7 @@ namespace Backend.Application.Features.Authentication.Queries.LoginWithGoogleTok
                     ExternalIdentityProvider = request.ExternalIdentityProvider,
                     Username = $"{request.ExternalId}|{request.ExternalIdentityProvider}",
                     CreatedAt = now,
-                    IsActive = true
+                    EmailVerificationStatus = Domain.Enums.EmailVerificationStatusEnum.Accepted
                 };
 
                 await _userRepository.AddUser(user);

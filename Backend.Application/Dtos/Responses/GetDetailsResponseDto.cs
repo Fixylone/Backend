@@ -1,4 +1,6 @@
-﻿namespace Backend.Application.Dtos.Responses
+﻿using Backend.Domain.Enums;
+
+namespace Backend.Application.Dtos.Responses
 {
     public record GetDetailsResponseDto(
         Guid Id,
@@ -9,5 +11,5 @@
         DateTime CreatedAt,
         DateTime? UpdatedAt,
         DateTime? LastLoginAt,
-        bool IsActive);
+        EmailVerificationStatusEnum EmailVerificationStatus);
 }

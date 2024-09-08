@@ -37,7 +37,7 @@ namespace Backend.Infrastructure.ExternalServices
         }
 
         /// <inheritdoc />
-        public async Task<bool> SendAsync(string toEmail, string subject, EmailTemplate emailTemplate)
+        public async Task<bool> SendAsync(string toEmail, string subject, EmailTemplateEnum emailTemplate)
         {
             var htmlContent = await GetHtmlContent(emailTemplate);
             var client = new SendGridClient(_appSettings.SendGridApiKey);
@@ -58,7 +58,7 @@ namespace Backend.Infrastructure.ExternalServices
             return true;
         }
 
-        private async Task<string> GetHtmlContent(EmailTemplate emailTemplate)
+        private async Task<string> GetHtmlContent(EmailTemplateEnum emailTemplate)
         {
             // Prepare email template.
             await using var stream = _embedded
