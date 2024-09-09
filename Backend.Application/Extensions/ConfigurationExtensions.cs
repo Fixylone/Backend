@@ -17,6 +17,8 @@ namespace Backend.Application.Extensions
         /// <param name="services">Service collection.</param>
         public static void AddApplication(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddSingleton<IPasswordHelper, PasswordHelper>();
             services.AddSingleton<IJwtProvider, JwtProvider>();
 

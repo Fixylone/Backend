@@ -9,7 +9,7 @@ Content-Type: application/json
     "password": "sampita",
     "birthDate": "1990-05-15T00:00:00Z",
     "address": "Cara Dusana",
-    "userType": "Driver"
+    "userType": "User"
 }
 
 ###
@@ -31,9 +31,9 @@ Content-Type: application/json
 
 ###
 
-PATCH {{Backend_HostAddress}}/api/user/UpdateUser/4205a58b-b905-4404-8f2a-6df4e3345927
+PATCH {{Backend_HostAddress}}/api/user/UpdateUser
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjQyMDVhNThiLWI5MDUtNDQwNC04ZjJhLTZkZjRlMzM0NTkyNyIsIm5iZiI6MTcyNTgyMjgzOSwiZXhwIjoxNzI2NDI3NjM5LCJpYXQiOjE3MjU4MjI4Mzl9.oTX8uc_nk9SyyT_lzrL_ZV2aM3DOTHDfWL22R_-AMtA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjQxOTdkMTdiLThjZWQtNGI4Mi04NWEyLTVlOWYzNmViNjU1ZCIsIm5iZiI6MTcyNTkwOTM2NCwiZXhwIjoxNzI2NTE0MTY0LCJpYXQiOjE3MjU5MDkzNjR9.yL93VDtNu3IGjsYquqTcRyXnivshSC-X8J2HetXCJVo
 
 {
     "userName": "John",

@@ -1,28 +1,32 @@
-﻿using Backend.Application.Contracts;
+﻿using System.Security.Claims;
+using Backend.Application.Contracts;
 using Backend.Application.Dtos.Requests;
 using Backend.Application.Dtos.Responses;
 using Backend.Domain.Contracts.Repositories;
 using Backend.Domain.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Backend.Application.Features.User.Commands
 {
-    public record UpdateUserCommand(Guid UpdateUserId, Guid CurrentContextUserId, UpdateUserRequestDto UpdateUserRequestDto)
+    public record UpdateUserCommand(UpdateUserRequestDto UpdateUserRequestDto)
         : IRequest<GetDetailsResponseDto>;
 
     internal sealed class UpdateUserCommandHandler(
         ILogger<UpdateUserCommand> _logger,
         IPasswordHelper _passwordHelper,
-        IUserRepository _userRepository) : IRequestHandler<UpdateUserCommand, GetDetailsResponseDto>
+        IUserRepository _userRepository,
+        IHttpContextAccessor _httpContextAccessor) : IRequestHandler<UpdateUserCommand, GetDetailsResponseDto>
     {
         /// <inheritdoc/>
         public async Task<GetDetailsResponseDto> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            if (request.CurrentContextUserId != request.UpdateUserId)
-                throw new ForbiddenException();
+            var claimsIdentity = _httpContextAccessor.HttpContext!.User.Identity as ClaimsIdentity
+                ?? throw new UnauthorizedAccessException();
 
-            var user = await _userRepository.GetUserById(request.UpdateUserId)
+            var userId = Guid.Parse(claimsIdentity.FindFirst(ClaimTypes.Name).Value);
+            var user = await _userRepository.GetUserById(userId)
                 ?? throw new EntityNotFoundException("User not found.");
 
             var isExternalUser = !string.IsNullOrEmpty(user.ExternalId);
@@ -52,7 +56,7 @@ namespace Backend.Application.Features.User.Commands
             }
 
             user.UpdatedAt = DateTime.UtcNow;
-            user.UpdatedById = request.CurrentContextUserId;
+            user.UpdatedById = userId;
 
             await _userRepository.Save();
 

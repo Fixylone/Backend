@@ -27,7 +27,7 @@ namespace Backend.Controllers
         {
             await HttpContext.ChallengeAsync("oidc-google", new AuthenticationProperties
             {
-                RedirectUri = "/ExternalUser/loginWithGoogleToken"
+                RedirectUri = "/ExternalUserAuthentication/loginWithGoogleToken"
             });
         }
 
